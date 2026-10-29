@@ -37,8 +37,8 @@
 }
 
 * { box-sizing: border-box; }
-html { scroll-behavior: smooth; }
-body { min-width: 320px; margin: 0; background: var(--page); color: var(--ink); transition: background-color .25s ease, color .25s ease; }
+html { overflow-x: hidden; scroll-behavior: smooth; }
+body { min-width: 320px; max-width: 100%; margin: 0; overflow-x: hidden; background: var(--page); color: var(--ink); transition: background-color .25s ease, color .25s ease; }
 button, input, select, textarea { font: inherit; }
 button { color: inherit; }
 a { color: inherit; }
@@ -47,6 +47,7 @@ a { color: inherit; }
 .skip-link { position: fixed; z-index: 20; top: -5rem; left: 1rem; padding: .75rem 1rem; border: 1px solid var(--line); border-radius: .4rem; background: var(--surface); color: var(--ink); }
 .skip-link:focus { top: 1rem; }
 .site-header { position: sticky; z-index: 10; top: 0; display: flex; align-items: center; justify-content: space-between; gap: 1rem; max-width: 78rem; margin: auto; padding: 1rem clamp(1rem, 4vw, 2rem); border-bottom: 1px solid var(--line); background: color-mix(in srgb, var(--page) 92%, transparent); backdrop-filter: blur(14px); }
+.site-header, main, .site-footer { position: relative; z-index: 1; }
 .site-header nav { display: flex; align-items: center; justify-content: flex-end; gap: clamp(.6rem, 2vw, 1.35rem); }
 .site-header nav a { color: var(--muted); font-weight: 700; text-decoration: none; text-underline-offset: .35rem; }
 .site-header nav a:hover, .site-header nav a:focus-visible, .site-header nav a[aria-current="page"] { color: var(--accent); text-decoration: underline; }
@@ -71,6 +72,9 @@ p { line-height: 1.6; }
 .button:hover { transform: translateY(-2px); }
 .button-primary { background: var(--accent); color: var(--page); }
 .button-primary:hover, .button-primary:focus-visible { background: var(--accent-strong); }
+.button-google { position: relative; overflow: hidden; border-color: var(--line); background: var(--surface); color: var(--ink); }
+.button-google::before { position: absolute; inset: 0 0 auto; height: 3px; content: ""; background: linear-gradient(90deg, #4285f4 0 25%, #34a853 25% 50%, #fbbc05 50% 75%, #ea4335 75% 100%); }
+.button-google:hover, .button-google:focus-visible { border-color: var(--accent); background: var(--surface-soft); }
 .button-secondary { border-color: var(--line); background: var(--surface); color: var(--accent); }
 .button-secondary:hover, .button-secondary:focus-visible { border-color: var(--accent); background: var(--surface-soft); }
 .button:disabled { cursor: not-allowed; opacity: .65; transform: none; }

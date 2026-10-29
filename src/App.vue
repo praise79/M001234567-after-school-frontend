@@ -4,6 +4,7 @@ import HomeView from './views/HomeView.vue'
 import ActivitiesView from './views/ActivitiesView.vue'
 import ActivityDetailsView from './views/ActivityDetailsView.vue'
 import BookingConfirmationView from './views/BookingConfirmationView.vue'
+import CobwebBackground from './components/CobwebBackground.vue'
 
 const route = ref(window.location.hash || '#/')
 const theme = ref('light')
@@ -55,6 +56,7 @@ onUnmounted(() => window.removeEventListener('hashchange', updateRoute))
 </script>
 
 <template>
+  <CobwebBackground />
   <a class="skip-link" href="#main-content">Skip to main content</a>
 
   <header class="site-header">

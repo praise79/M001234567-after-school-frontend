@@ -7,7 +7,7 @@
         Bright Futures brings practical art, technology and sport sessions to children aged 6 to 12.
         Find an activity that feels like them.
       </p>
-      <a class="button button-primary" href="#/activities">Explore activities</a>
+      <a class="button button-google" href="#/activities">Explore activities</a>
     </div>
     <aside class="hero-card" aria-label="Featured activity categories">
       <div class="hero-card-inner">
