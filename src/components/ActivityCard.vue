@@ -9,10 +9,10 @@ function availablePlaces(activity) {
 </script>
 
 <template>
-  <article class="activity-card">
+  <a class="activity-card" :href="`#/activities/${activity._id}`" :aria-label="`View ${activity.name}`">
     <div class="activity-card__top">
       <span class="activity-card__category">{{ activity.category }}</span>
-      <span class="activity-card__price">£{{ activity.price }} per session</span>
+      <span class="activity-card__price">₦{{ Number(activity.price).toLocaleString('en-NG') }} per session</span>
     </div>
     <h3>{{ activity.name }}</h3>
     <p>{{ activity.description }}</p>
@@ -21,6 +21,5 @@ function availablePlaces(activity) {
       <span>{{ activity.schedule }}</span>
       <span>{{ availablePlaces(activity) }} places left</span>
     </div>
-    <a class="text-link" :href="`#/activities/${activity._id}`">View activity<span class="sr-only">: {{ activity.name }}</span></a>
-  </article>
+  </a>
 </template>

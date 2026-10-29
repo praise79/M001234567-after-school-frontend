@@ -33,8 +33,6 @@ onMounted(loadActivity)
 
 <template>
   <section class="page-section">
-    <a class="back-link" href="#/activities">← Back to activities</a>
-
     <div v-if="isLoading" class="state" role="status" aria-live="polite">
       <div><div class="loading-indicator" aria-hidden="true"></div><p>Loading activity details…</p></div>
     </div>
@@ -52,13 +50,12 @@ onMounted(loadActivity)
 
     <div v-else-if="activity" class="detail-layout">
       <div>
-        <p class="eyebrow">{{ activity.category }}</p>
         <h1>{{ activity.name }}</h1>
         <p class="detail-description">{{ activity.description }}</p>
         <ul class="detail-list" aria-label="Activity information">
           <li><strong>Age range</strong> {{ activity.minAge }}–{{ activity.maxAge }} years</li>
           <li><strong>Schedule</strong> {{ activity.schedule }}</li>
-          <li><strong>Price</strong> £{{ activity.price }} per session</li>
+          <li><strong>Price</strong> ₦{{ Number(activity.price).toLocaleString('en-NG') }} per session</li>
           <li><strong>Availability</strong> {{ Math.max(activity.capacity - activity.placesBooked, 0) }} places left</li>
         </ul>
       </div>

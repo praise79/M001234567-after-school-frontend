@@ -95,7 +95,7 @@ onUnmounted(() => window.removeEventListener('hashchange', updateRoute))
   </main>
 
   <footer class="site-footer">
-    <p>Bright Futures After-School Classes</p>
-    <a href="mailto:hello@brightfutures.example">hello@brightfutures.example</a>
+    <p>Activities</p>
+    <p>© {{ new Date().getFullYear() }} Activities</p>
   </footer>
 </template>
