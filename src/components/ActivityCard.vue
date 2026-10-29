@@ -12,12 +12,12 @@ function availablePlaces(activity) {
   <article class="activity-card">
     <div class="activity-card__top">
       <span class="activity-card__category">{{ activity.category }}</span>
-      <span class="activity-card__price">£{{ activity.price }} / session</span>
+      <span class="activity-card__price">£{{ activity.price }} per session</span>
     </div>
     <h3>{{ activity.name }}</h3>
     <p>{{ activity.description }}</p>
     <div class="activity-card__meta" aria-label="Activity details">
-      <span>Ages {{ activity.minAge }}–{{ activity.maxAge }}</span>
+      <span>Ages {{ activity.minAge }} to {{ activity.maxAge }}</span>
       <span>{{ activity.schedule }}</span>
       <span>{{ availablePlaces(activity) }} places left</span>
     </div>
