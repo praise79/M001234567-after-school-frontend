@@ -55,7 +55,7 @@ onMounted(loadActivity)
         <ul class="detail-list" aria-label="Activity information">
           <li><strong>Age range</strong> {{ activity.minAge }}–{{ activity.maxAge }} years</li>
           <li><strong>Schedule</strong> {{ activity.schedule }}</li>
-          <li><strong>Price</strong> ₦{{ Number(activity.price).toLocaleString('en-NG') }} per session</li>
+          <li><strong>Price</strong> ${{ Number(activity.price).toLocaleString('en-US') }} per session</li>
           <li><strong>Availability</strong> {{ Math.max(activity.capacity - activity.placesBooked, 0) }} places left</li>
         </ul>
       </div>

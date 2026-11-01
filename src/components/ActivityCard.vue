@@ -12,7 +12,7 @@ function availablePlaces(activity) {
   <a class="activity-card" :href="`#/activities/${activity._id}`" :aria-label="`View ${activity.name}`">
     <div class="activity-card__top">
       <span class="activity-card__category">{{ activity.category }}</span>
-      <span class="activity-card__price">₦{{ Number(activity.price).toLocaleString('en-NG') }} per session</span>
+      <span class="activity-card__price">${{ Number(activity.price).toLocaleString('en-US') }} per session</span>
     </div>
     <h3>{{ activity.name }}</h3>
     <p>{{ activity.description }}</p>
