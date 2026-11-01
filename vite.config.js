@@ -4,6 +4,5 @@ import { defineConfig } from 'vite'
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [vue()],
-  // This must match the GitHub repository name for a project Pages site.
   base: '/M001234567-after-school-frontend/',
 })
