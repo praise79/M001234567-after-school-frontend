@@ -29,7 +29,7 @@
           <h2>A straightforward way to find a great session.</h2>
         </div>
       </div>
-      <div class="activity-grid">
+      <div class="activity-grid how-it-works-grid">
         <article class="activity-card">
           <h3>Choose an activity</h3>
           <p>Browse clear activity details, including the suitable age range, time and price.</p>
