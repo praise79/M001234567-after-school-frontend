@@ -24,7 +24,7 @@ async function loadActivity() {
 }
 
 function handleBooked(reference) {
-  sessionStorage.setItem('bright-futures-last-booking', reference)
+  sessionStorage.setItem('praise-last-booking', reference)
   window.location.hash = `#/booking-confirmation/${encodeURIComponent(reference)}`
 }
 

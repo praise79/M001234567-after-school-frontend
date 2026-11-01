@@ -1,6 +1,6 @@
-# Bright Futures frontend
+# Praise frontend
 
-Vue 3/Vite frontend for the Bright Futures after-school activities coursework.
+Vue 3/Vite frontend for the Praise after-school activities coursework.
 
 ## Run locally
 

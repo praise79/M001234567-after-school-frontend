@@ -3,7 +3,7 @@
     <div class="hero-copy">
       <h1>Small groups. Big after-school ideas.</h1>
       <p class="lede">
-        Bright Futures brings practical art, technology and sport sessions to children aged 6 to 12.
+        Praise brings practical art, technology and sport sessions to children aged 6 to 12.
         Find an activity that feels like them.
       </p>
       <a class="button button-google" href="#/activities">Explore activities</a>

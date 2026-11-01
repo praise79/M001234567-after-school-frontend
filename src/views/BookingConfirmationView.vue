@@ -5,7 +5,7 @@ const props = defineProps({
   reference: { type: String, required: true },
 })
 
-const isConfirmed = computed(() => sessionStorage.getItem('bright-futures-last-booking') === props.reference)
+const isConfirmed = computed(() => sessionStorage.getItem('praise-last-booking') === props.reference)
 </script>
 
 <template>

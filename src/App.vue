@@ -42,7 +42,7 @@ function updateRoute() {
 function setTheme(nextTheme) {
   theme.value = nextTheme
   document.documentElement.dataset.theme = nextTheme
-  localStorage.setItem('bright-futures-theme', nextTheme)
+  localStorage.setItem('praise-theme', nextTheme)
 }
 
 function toggleTheme() {
@@ -58,7 +58,7 @@ function goToCart(event) {
 }
 
 onMounted(() => {
-  const savedTheme = localStorage.getItem('bright-futures-theme')
+  const savedTheme = localStorage.getItem('praise-theme')
   const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
   setTheme(savedTheme === 'dark' || savedTheme === 'light' ? savedTheme : systemTheme)
   window.addEventListener('hashchange', updateRoute)
@@ -71,7 +71,7 @@ onUnmounted(() => window.removeEventListener('hashchange', updateRoute))
   <a class="skip-link" href="#main-content">Skip to main content</a>
 
   <header class="site-header">
-    <a class="brand" href="#/" aria-label="Bright Futures home">Bright Futures</a>
+    <a class="brand" href="#/" aria-label="Praise home">Praise</a>
     <nav aria-label="Main navigation">
       <a href="#/" :aria-current="currentView.key === 'home' ? 'page' : undefined">Home</a>
       <a href="#/activities" :aria-current="currentView.key === 'activities' ? 'page' : undefined">
