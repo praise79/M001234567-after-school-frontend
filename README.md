@@ -18,3 +18,5 @@ The lessons page loads ten lessons, sends search and teacher filters to the back
 Run `npm run build` to create `dist`. `vite.config.js` uses `/M001234567-after-school-frontend/` as its base path because this project is intended for a GitHub Pages project site with that repository name. Change the value only if the GitHub repository name changes.
 
 For a production build, set `VITE_USE_MOCK_DATA=false` and point `VITE_API_BASE_URL` to the deployed Render backend. Do not use `localhost` or put secrets in frontend environment variables.
+
+Before publishing, confirm the GitHub Pages workflow secret `VITE_API_BASE_URL` contains only the Render origin, for example `https://M001234567-after-school.onrender.com`.
