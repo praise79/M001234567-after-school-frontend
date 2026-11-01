@@ -1,6 +1,6 @@
 <script setup>
 const apiBaseUrl = (import.meta.env.VITE_API_BASE_URL || '').replace(/\/$/, '')
-defineProps({ lesson: { type: Object, required: true }, inCart: { type: Boolean, default: false } })
+defineProps({ lesson: { type: Object, required: true }, inCart: { type: Boolean, default: false }, isAdding: { type: Boolean, default: false } })
 defineEmits(['add'])
 
 function imageUrl(path) {
@@ -17,7 +17,7 @@ function imageUrl(path) {
       <h2>{{ lesson.topic }}</h2>
       <p>{{ lesson.description || 'A practical, friendly session led by an experienced teacher.' }}</p>
       <div class="activity-card__meta"><span>{{ lesson.location }}</span><span>{{ lesson.space }} spaces left</span><span>{{ lesson.teacherFirstName }} {{ lesson.teacherLastName }}</span></div>
-      <button class="button button-primary lesson-card__button" type="button" :aria-label="`${lesson.topic}: ${inCart ? 'already in cart' : lesson.space === 0 ? 'no spaces left' : 'add to cart'}`" :disabled="lesson.space === 0 || inCart" @click="$emit('add', lesson)">{{ inCart ? 'In cart' : lesson.space === 0 ? 'Full' : 'Add to cart' }}</button>
+      <button class="button button-primary lesson-card__button" type="button" :aria-label="`${lesson.topic}: ${isAdding ? 'adding to cart' : inCart ? 'already in cart' : lesson.space === 0 ? 'no spaces left' : 'add to cart'}`" :disabled="lesson.space === 0 || inCart || isAdding" @click="$emit('add', lesson)">{{ isAdding ? 'Adding…' : inCart ? 'In cart' : lesson.space === 0 ? 'Full' : 'Add to cart' }}</button>
     </div>
   </article>
 </template>
