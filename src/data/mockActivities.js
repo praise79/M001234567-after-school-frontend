@@ -97,4 +97,19 @@ export const mockActivities = [
     placesBooked: 8,
     isActive: true,
   },
+  {
+    _id: '65f0b1c2d3e4f56789012348',
+    name: 'Young Chefs Kitchen', category: 'Cooking', description: 'Prepare simple dishes while learning kitchen confidence and food safety.',
+    minAge: 8, maxAge: 12, schedule: 'Mondays, 4:00 to 5:30 pm', price: 16, capacity: 12, placesBooked: 4, isActive: true,
+  },
+  {
+    _id: '65f0b1c2d3e4f56789012349',
+    name: 'Dance and Movement', category: 'Dance', description: 'Find rhythm, balance and confidence through joyful movement sessions.',
+    minAge: 6, maxAge: 11, schedule: 'Wednesdays, 4:00 to 5:15 pm', price: 13, capacity: 14, placesBooked: 3, isActive: true,
+  },
+  {
+    _id: '65f0b1c2d3e4f5678901234a',
+    name: 'Photo Explorers', category: 'Media', description: 'Learn the basics of visual storytelling with cameras, light and composition.',
+    minAge: 9, maxAge: 13, schedule: 'Fridays, 4:00 to 5:30 pm', price: 17, capacity: 10, placesBooked: 4, isActive: true,
+  },
 ]

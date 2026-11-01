@@ -11,6 +11,8 @@ Vue 3/Vite frontend for the Bright Futures after-school activities coursework.
 
 The app uses the browser's native `fetch()` API in `src/services/api.js`. It does not use Axios or XMLHttpRequest.
 
+The lessons page loads ten lessons, sends search and teacher filters to the backend, supports subject/location/price/spaces sorting, and updates remaining spaces through `PUT /lessons/:id`. The cart is a separate route. Removing a lesson restores its space; checkout validates names with `^[a-zA-Z\\s]+$`, phones with `^[0-9]+$`, posts to `/order`, and displays an “Order submitted” message.
+
 ## Build
 
 Run `npm run build` to create `dist`. `vite.config.js` uses `/M001234567-after-school-frontend/` as its base path because this project is intended for a GitHub Pages project site with that repository name. Change the value only if the GitHub repository name changes.

@@ -4,16 +4,19 @@ import HomeView from './views/HomeView.vue'
 import ActivitiesView from './views/ActivitiesView.vue'
 import ActivityDetailsView from './views/ActivityDetailsView.vue'
 import BookingConfirmationView from './views/BookingConfirmationView.vue'
+import CartView from './views/CartView.vue'
 import CobwebBackground from './components/CobwebBackground.vue'
 
 const route = ref(window.location.hash || '#/')
 const theme = ref('light')
+const cart = ref([])
 
 const currentView = computed(() => {
   const path = route.value.slice(1) || '/'
 
   if (path === '/') return { component: HomeView, key: 'home' }
   if (path === '/activities') return { component: ActivitiesView, key: 'activities' }
+  if (path === '/cart') return { component: CartView, key: 'cart' }
   if (path.startsWith('/activities/')) {
     return {
       component: ActivityDetailsView,
@@ -46,6 +49,14 @@ function toggleTheme() {
   setTheme(theme.value === 'light' ? 'dark' : 'light')
 }
 
+function updateCart(nextCart) {
+  cart.value = nextCart
+}
+
+function goToCart(event) {
+  if (cart.value.length === 0) event.preventDefault()
+}
+
 onMounted(() => {
   const savedTheme = localStorage.getItem('bright-futures-theme')
   const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
@@ -65,6 +76,9 @@ onUnmounted(() => window.removeEventListener('hashchange', updateRoute))
       <a href="#/" :aria-current="currentView.key === 'home' ? 'page' : undefined">Home</a>
       <a href="#/activities" :aria-current="currentView.key === 'activities' ? 'page' : undefined">
         Activities
+      </a>
+      <a class="cart-link" href="#/cart" :aria-current="currentView.key === 'cart' ? 'page' : undefined" :aria-disabled="cart.length === 0" @click="goToCart">
+        Cart<span v-if="cart.length"> ({{ cart.length }})</span>
       </a>
       <button
         class="theme-toggle"
@@ -91,6 +105,8 @@ onUnmounted(() => window.removeEventListener('hashchange', updateRoute))
       :key="route"
       :activity-id="currentView.activityId"
       :reference="currentView.reference"
+      :cart="cart"
+      @cart-updated="updateCart"
     />
   </main>
 
