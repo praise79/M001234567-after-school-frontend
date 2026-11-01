@@ -23,20 +23,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Build project
-        env:
-          VITE_API_BASE_URL: ${{ secrets.VITE_API_BASE_URL }}
-          VITE_USE_MOCK_DATA: 'false'
-        run: npm run build
+      - name: Prepare static site
+        run: |
+          mkdir site
+          cp index.html styles.css app.js home.html activities.html cart.html activity-details.html booking-confirmation.html site/
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
@@ -44,7 +34,7 @@ jobs:
       - name: Upload dist artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: './dist'
+          path: './site'
 
       - name: Deploy to GitHub Pages
         id: deployment
