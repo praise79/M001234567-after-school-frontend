@@ -7,16 +7,16 @@ const { createApp, ref, reactive, computed, onMounted, onUnmounted } =
       ).replace(/\/$/, "");
       const useMockData = config.useMockData === true;
       const subjectImagePaths = Object.freeze({
-        technology: "/images/lesson-technology.svg",
-        art: "/images/lesson-art.svg",
-        sport: "/images/lesson-sport.svg",
-        music: "/images/lesson-music.svg",
-        nature: "/images/lesson-nature.svg",
-        writing: "/images/lesson-writing.svg",
-        making: "/images/lesson-making.svg",
-        cooking: "/images/lesson-cooking.svg",
-        dance: "/images/lesson-dance.svg",
-        media: "/images/lesson-media.svg",
+        technology: "images/lesson-technology.svg",
+        art: "images/lesson-art.svg",
+        sport: "images/lesson-sport.svg",
+        music: "images/lesson-music.svg",
+        nature: "images/lesson-nature.svg",
+        writing: "images/lesson-writing.svg",
+        making: "images/lesson-making.svg",
+        cooking: "images/lesson-cooking.svg",
+        dance: "images/lesson-dance.svg",
+        media: "images/lesson-media.svg",
       });
       const mockActivities = [
         [
@@ -477,20 +477,39 @@ const { createApp, ref, reactive, computed, onMounted, onUnmounted } =
           lesson: { type: Object, required: true },
           inCart: Boolean,
           isAdding: Boolean,
+          imageIndex: { type: Number, default: 0 },
         },
         emits: ["add"],
         template:
-          '<article class="lesson-card"><img class="lesson-card__image" :src="imageUrl(lesson.image, lesson.subject)" :alt="`${lesson.topic} lesson illustration`" loading="lazy" /><div class="lesson-card__body"><div class="activity-card__top"><span class="activity-card__category">{{ lesson.subject }}</span><span class="activity-card__price">${{ Number(lesson.price).toLocaleString(\'en-US\') }}</span></div><h2>{{ lesson.topic }}</h2><p>{{ lesson.description || \'A practical, friendly session led by an experienced teacher.\' }}</p><div class="activity-card__meta"><span>{{ lesson.location }}</span><span>{{ lesson.space }} spaces left</span><span>{{ lesson.teacherFirstName }} {{ lesson.teacherLastName }}</span></div><button class="button button-primary lesson-card__button" type="button" :disabled="lesson.space === 0 || inCart || isAdding" @click="$emit(\'add\', lesson)">{{ isAdding ? \'Adding...\' : inCart ? \'In cart\' : lesson.space === 0 ? \'Full\' : \'Add to cart\' }}</button></div></article>',
+          '<article class="lesson-card"><img class="lesson-card__image" :src="imageUrl(lesson.image, lesson.subject, imageIndex)" :alt="`${lesson.topic} lesson illustration`" loading="lazy" @error="fallbackImage($event, lesson.image, lesson.subject)" /><div class="lesson-card__body"><div class="activity-card__top"><span class="activity-card__category">{{ lesson.subject }}</span><span class="activity-card__price">${{ Number(lesson.price).toLocaleString(\'en-US\') }}</span></div><h2>{{ lesson.topic }}</h2><p>{{ lesson.description || \'A practical, friendly session led by an experienced teacher.\' }}</p><div class="activity-card__meta"><span>{{ lesson.location }}</span><span>{{ lesson.space }} spaces left</span><span>{{ lesson.teacherFirstName }} {{ lesson.teacherLastName }}</span></div><button class="button button-primary lesson-card__button" type="button" :disabled="lesson.space === 0 || inCart || isAdding" @click="$emit(\'add\', lesson)">{{ isAdding ? \'Adding...\' : inCart ? \'In cart\' : lesson.space === 0 ? \'Full\' : \'Add to cart\' }}</button></div></article>',
         setup() {
-          function imageUrl(path, subject) {
+          function imageUrl(path, subject, index) {
+            const seed = encodeURIComponent(
+              `praise-${String(subject || "lesson").trim()}-${index}`,
+            );
+            return `https://picsum.photos/seed/${seed}/900/540`;
+          }
+          function fallbackImage(event, path, subject) {
+            const image = event.target;
             const relatedPath =
               subjectImagePaths[String(subject || "").trim().toLowerCase()];
-            const resolvedPath = relatedPath || path || "/images/lesson.svg";
-            return resolvedPath.startsWith("http")
-              ? resolvedPath
-              : `${apiBaseUrl}${resolvedPath}`;
+            const fallbackPaths = [...new Set(
+              [relatedPath, path, "/images/lesson.svg"].filter(Boolean),
+            )];
+            const step = Number(image.dataset.fallbackStep || 0);
+            if (step >= fallbackPaths.length) {
+              image.onerror = null;
+              return;
+            }
+            image.dataset.fallbackStep = String(step + 1);
+            const nextPath = fallbackPaths[step];
+            image.src = nextPath.startsWith("images/")
+              ? new URL(nextPath, document.baseURI).href
+              : nextPath.startsWith("http")
+                ? nextPath
+                : `${apiBaseUrl}${nextPath}`;
           }
-          return { imageUrl };
+          return { imageUrl, fallbackImage };
         },
       };
       const BookingForm = {
@@ -576,7 +595,7 @@ const { createApp, ref, reactive, computed, onMounted, onUnmounted } =
         props: { cart: { type: Array, default: () => [] } },
         emits: ["cart-updated"],
         template:
-          '<section class="page-section"><p class="eyebrow">Find a session</p><h1>Lessons for active, creative afternoons.</h1><p class="lede">Choose from practical sessions with clear prices, locations, teachers and spaces left.</p><form class="lesson-toolbar" @submit.prevent="loadLessons(true)"><label class="field">Search<input v-model="search" type="search" placeholder="Topic, location, price or spaces" /></label><label class="field">Teacher<input v-model="teacher" type="search" placeholder="First or last name" /></label><label class="field">Sort by<select v-model="sortBy"><option value="subject">Subject</option><option value="location">Location</option><option value="price">Price</option><option value="space">Spaces</option></select></label><label class="field">Order<select v-model="direction"><option value="asc">Ascending</option><option value="desc">Descending</option></select></label><button class="button button-primary" type="submit" :disabled="isLoading">{{ isLoading ? \'Applying...\' : \'Apply filters\' }}</button></form><p v-if="hasAppliedFilters && filterMessage" class="filter-feedback" :class="`filter-feedback--${filterMessageType}`" role="status">{{ filterMessage }}</p><div v-if="isLoading" class="state" role="status"><div><div class="loading-indicator" aria-hidden="true"></div><p>Loading lessons...</p></div></div><div v-else-if="errorMessage" class="state state-error" role="alert"><div><h2>We could not load the lessons.</h2><p>{{ errorMessage }}</p><button class="button button-primary" type="button" @click="loadLessons">Try again</button></div></div><div v-else-if="lessons.length === 0" class="state"><div><h2>No lessons match those filters.</h2><p>Try a different search or teacher name.</p></div></div><div v-else class="lesson-grid"><LessonCard v-for="lesson in lessons" :key="lesson.id || lesson._id" :lesson="lesson" :in-cart="inCart(lesson)" :is-adding="addingId === (lesson.id || lesson._id)" @add="addToCart" /></div></section>',
+          '<section class="page-section"><p class="eyebrow">Find a session</p><h1>Lessons for active, creative afternoons.</h1><p class="lede">Choose from practical sessions with clear prices, locations, teachers and spaces left.</p><form class="lesson-toolbar" @submit.prevent="loadLessons(true)"><label class="field">Search<input v-model="search" type="search" placeholder="Topic, location, price or spaces" /></label><label class="field">Teacher<input v-model="teacher" type="search" placeholder="First or last name" /></label><label class="field">Sort by<select v-model="sortBy"><option value="subject">Subject</option><option value="location">Location</option><option value="price">Price</option><option value="space">Spaces</option></select></label><label class="field">Order<select v-model="direction"><option value="asc">Ascending</option><option value="desc">Descending</option></select></label><button class="button button-primary" type="submit" :disabled="isLoading">{{ isLoading ? \'Applying...\' : \'Apply filters\' }}</button></form><p v-if="hasAppliedFilters && filterMessage" class="filter-feedback" :class="`filter-feedback--${filterMessageType}`" role="status">{{ filterMessage }}</p><div v-if="isLoading" class="state" role="status"><div><div class="loading-indicator" aria-hidden="true"></div><p>Loading lessons...</p></div></div><div v-else-if="errorMessage" class="state state-error" role="alert"><div><h2>We could not load the lessons.</h2><p>{{ errorMessage }}</p><button class="button button-primary" type="button" @click="loadLessons">Try again</button></div></div><div v-else-if="lessons.length === 0" class="state"><div><h2>No lessons match those filters.</h2><p>Try a different search or teacher name.</p></div></div><div v-else class="lesson-grid"><LessonCard v-for="(lesson, index) in lessons" :key="lesson.id || lesson._id" :lesson="lesson" :image-index="index" :in-cart="inCart(lesson)" :is-adding="addingId === (lesson.id || lesson._id)" @add="addToCart" /></div></section>',
         setup(props, { emit }) {
           const lessons = ref([]),
             isLoading = ref(true),
@@ -880,4 +899,3 @@ const { createApp, ref, reactive, computed, onMounted, onUnmounted } =
         },
       };
       createApp(App).mount("#app");
-

@@ -27,6 +27,7 @@ jobs:
         run: |
           mkdir site
           cp index.html styles.css app.js home.html activities.html cart.html activity-details.html booking-confirmation.html site/
+          cp -r images site/images
 
       - name: Setup Pages
         uses: actions/configure-pages@v4

@@ -14,7 +14,7 @@ python -m http.server 8080
 
 Then open `http://localhost:8080`. The page calls `https://m001234567-after-school-toot.onrender.com` by default. To use another API origin, edit the `apiBaseUrl` constant near the top of `app.js`.
 
-The app uses the browser's native `fetch()` API with Promise handling. It does not use Axios or XMLHttpRequest. The lessons page loads ten lessons, sends search and teacher filters to the backend, supports subject/location/price/spaces sorting, and updates remaining spaces through `PUT /lessons/:id`. Each subject is shown with a related SVG illustration served from the API. The cart is a separate hash route. Removing a lesson restores its space; checkout validates names with `^[a-zA-Z\\s]+$`, phones with `^[0-9]+$`, posts to `/order`, and displays an "Order submitted" message.
+The app uses the browser's native `fetch()` API with Promise handling. It does not use Axios or XMLHttpRequest. The lessons page loads ten lessons, sends search and teacher filters to the backend, supports subject/location/price/spaces sorting, and updates remaining spaces through `PUT /lessons/:id`. Each card first tries a different seeded Picsum image based on its subject and position, then falls back to the matching local SVG illustration and finally the API's generic lesson image. The cart is a separate hash route. Removing a lesson restores its space; checkout validates names with `^[a-zA-Z\\s]+$`, phones with `^[0-9]+$`, posts to `/order`, and displays an "Order submitted" message.
 
 ## GitHub Pages
 
