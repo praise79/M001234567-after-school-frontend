@@ -323,7 +323,7 @@ const { createApp, ref, reactive, computed, onMounted, onUnmounted } =
       const CobwebBackground = {
         template:
           '<canvas ref="canvas" class="cobweb-canvas" aria-hidden="true"></canvas>',
-        setup() {
+        setup(props) {
           const canvas = ref(null);
           let dispose = () => {};
           onMounted(() => {
@@ -482,8 +482,22 @@ const { createApp, ref, reactive, computed, onMounted, onUnmounted } =
         emits: ["add"],
         template:
           '<article class="lesson-card"><img class="lesson-card__image" :src="imageUrl(lesson.image, lesson.subject, imageIndex)" :alt="`${lesson.topic} lesson illustration`" loading="lazy" @error="fallbackImage($event, lesson.image, lesson.subject)" /><div class="lesson-card__body"><div class="activity-card__top"><span class="activity-card__category">{{ lesson.subject }}</span><span class="activity-card__price">${{ Number(lesson.price).toLocaleString(\'en-US\') }}</span></div><h2>{{ lesson.topic }}</h2><p>{{ lesson.description || \'A practical, friendly session led by an experienced teacher.\' }}</p><div class="activity-card__meta"><span>{{ lesson.location }}</span><span>{{ lesson.space }} spaces left</span><span>{{ lesson.teacherFirstName }} {{ lesson.teacherLastName }}</span></div><button class="button button-primary lesson-card__button" type="button" :disabled="lesson.space === 0 || inCart || isAdding" @click="$emit(\'add\', lesson)">{{ isAdding ? \'Adding...\' : inCart ? \'In cart\' : lesson.space === 0 ? \'Full\' : \'Add to cart\' }}</button></div></article>',
-        setup() {
+        setup(props) {
+          const showSvg = ref(false);
+          let imageTimer;
+          function localImagePath(subject) {
+            return (
+              subjectImagePaths[String(subject || "").trim().toLowerCase()] ||
+              "images/lesson.svg"
+            );
+          }
           function imageUrl(path, subject, index) {
+            if (showSvg.value) {
+              return new URL(
+                localImagePath(subject),
+                document.baseURI,
+              ).href;
+            }
             const seed = encodeURIComponent(
               `praise-${String(subject || "lesson").trim()}-${index}`,
             );
@@ -491,10 +505,11 @@ const { createApp, ref, reactive, computed, onMounted, onUnmounted } =
           }
           function fallbackImage(event, path, subject) {
             const image = event.target;
+            showSvg.value = true;
             const relatedPath =
               subjectImagePaths[String(subject || "").trim().toLowerCase()];
             const fallbackPaths = [...new Set(
-              [relatedPath, path, "/images/lesson.svg"].filter(Boolean),
+              [relatedPath, "images/lesson.svg", path].filter(Boolean),
             )];
             const step = Number(image.dataset.fallbackStep || 0);
             if (step >= fallbackPaths.length) {
@@ -509,6 +524,17 @@ const { createApp, ref, reactive, computed, onMounted, onUnmounted } =
                 ? nextPath
                 : `${apiBaseUrl}${nextPath}`;
           }
+          onMounted(() => {
+            const preload = new Image();
+            preload.src = new URL(
+              localImagePath(props.lesson.subject),
+              document.baseURI,
+            ).href;
+            imageTimer = setInterval(() => {
+              showSvg.value = !showSvg.value;
+            }, 10000);
+          });
+          onUnmounted(() => clearInterval(imageTimer));
           return { imageUrl, fallbackImage };
         },
       };
