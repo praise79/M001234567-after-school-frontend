@@ -6,6 +6,18 @@ const { createApp, ref, reactive, computed, onMounted, onUnmounted } =
           "https://m001234567-after-school-toot.onrender.com",
       ).replace(/\/$/, "");
       const useMockData = config.useMockData === true;
+      const subjectImagePaths = Object.freeze({
+        technology: "/images/lesson-technology.svg",
+        art: "/images/lesson-art.svg",
+        sport: "/images/lesson-sport.svg",
+        music: "/images/lesson-music.svg",
+        nature: "/images/lesson-nature.svg",
+        writing: "/images/lesson-writing.svg",
+        making: "/images/lesson-making.svg",
+        cooking: "/images/lesson-cooking.svg",
+        dance: "/images/lesson-dance.svg",
+        media: "/images/lesson-media.svg",
+      });
       const mockActivities = [
         [
           "65f0b1c2d3e4f56789012341",
@@ -468,11 +480,15 @@ const { createApp, ref, reactive, computed, onMounted, onUnmounted } =
         },
         emits: ["add"],
         template:
-          '<article class="lesson-card"><img class="lesson-card__image" :src="imageUrl(lesson.image)" :alt="`${lesson.topic} lesson`" /><div class="lesson-card__body"><div class="activity-card__top"><span class="activity-card__category">{{ lesson.subject }}</span><span class="activity-card__price">${{ Number(lesson.price).toLocaleString(\'en-US\') }}</span></div><h2>{{ lesson.topic }}</h2><p>{{ lesson.description || \'A practical, friendly session led by an experienced teacher.\' }}</p><div class="activity-card__meta"><span>{{ lesson.location }}</span><span>{{ lesson.space }} spaces left</span><span>{{ lesson.teacherFirstName }} {{ lesson.teacherLastName }}</span></div><button class="button button-primary lesson-card__button" type="button" :disabled="lesson.space === 0 || inCart || isAdding" @click="$emit(\'add\', lesson)">{{ isAdding ? \'Adding...\' : inCart ? \'In cart\' : lesson.space === 0 ? \'Full\' : \'Add to cart\' }}</button></div></article>',
+          '<article class="lesson-card"><img class="lesson-card__image" :src="imageUrl(lesson.image, lesson.subject)" :alt="`${lesson.topic} lesson illustration`" loading="lazy" /><div class="lesson-card__body"><div class="activity-card__top"><span class="activity-card__category">{{ lesson.subject }}</span><span class="activity-card__price">${{ Number(lesson.price).toLocaleString(\'en-US\') }}</span></div><h2>{{ lesson.topic }}</h2><p>{{ lesson.description || \'A practical, friendly session led by an experienced teacher.\' }}</p><div class="activity-card__meta"><span>{{ lesson.location }}</span><span>{{ lesson.space }} spaces left</span><span>{{ lesson.teacherFirstName }} {{ lesson.teacherLastName }}</span></div><button class="button button-primary lesson-card__button" type="button" :disabled="lesson.space === 0 || inCart || isAdding" @click="$emit(\'add\', lesson)">{{ isAdding ? \'Adding...\' : inCart ? \'In cart\' : lesson.space === 0 ? \'Full\' : \'Add to cart\' }}</button></div></article>',
         setup() {
-          function imageUrl(path) {
-            if (!path) return `${apiBaseUrl}/images/lesson.svg`;
-            return path.startsWith("http") ? path : `${apiBaseUrl}${path}`;
+          function imageUrl(path, subject) {
+            const relatedPath =
+              subjectImagePaths[String(subject || "").trim().toLowerCase()];
+            const resolvedPath = relatedPath || path || "/images/lesson.svg";
+            return resolvedPath.startsWith("http")
+              ? resolvedPath
+              : `${apiBaseUrl}${resolvedPath}`;
           }
           return { imageUrl };
         },
@@ -864,5 +880,4 @@ const { createApp, ref, reactive, computed, onMounted, onUnmounted } =
         },
       };
       createApp(App).mount("#app");
-
 
