@@ -737,46 +737,18 @@ const { createApp, ref, reactive, computed, onMounted, onUnmounted } =
         props: { cart: { type: Array, default: () => [] } },
         emits: ["cart-updated"],
         template:
-          '<section class="page-section cart-page"><p class="eyebrow">Your lessons</p><h1>Cart and checkout</h1><div v-if="submitted" class="state confirmation" role="status"><div><div class="confirmation-mark" aria-hidden="true">✓</div><h2>Order submitted</h2><p>Your lessons are reserved. We will contact you with the next steps.</p><a class="button button-primary" href="#/activities">Choose more lessons</a></div></div><div v-else-if="cart.length === 0" class="state"><div><h2>Your cart is empty.</h2><p>Add a lesson before checking out.</p><a class="button button-primary" href="#/activities">Browse lessons</a></div></div><div v-else class="cart-layout"><div class="cart-list"><article v-for="lesson in cart" :key="lesson.id || lesson._id" class="cart-item"><div><p class="activity-card__category">{{ lesson.subject }}</p><h2>{{ lesson.topic }}</h2><p>{{ lesson.location }} · ${{ Number(lesson.price).toLocaleString(\'en-US\') }}</p></div><button class="button button-secondary" type="button" @click="removeLesson(lesson)">Remove</button></article></div><form class="booking-panel booking-form" :aria-busy="isSubmitting" @submit.prevent="checkout"><h2>Parent details</h2><label class="field">Name<input v-model="name" type="text" autocomplete="name" required pattern="[a-zA-Z\\s]+" /><span v-if="name && !nameValid" class="field-error">Use letters and spaces only.</span></label><label class="field">Country<select v-model="selectedCountry" autocomplete="country-name" required><option v-for="country in countries" :key="country.code" :value="country.code">{{ country.flag }} {{ country.name }} (+{{ country.callingCode }})</option></select></label><label class="field">Phone number<input v-model="phone" type="tel" inputmode="tel" autocomplete="tel-national" required :aria-invalid="phone.length > 0 && !phoneValid" :placeholder="phonePlaceholder" /><span v-if="phone && !phoneValid" class="field-error">Enter a valid {{ selectedCountryName }} phone number.</span><span v-else class="field-hint">Country code +{{ selectedCallingCode }} will be added automatically.</span></label><p v-if="errorMessage" class="form-error" role="alert">{{ errorMessage }}</p><button class="button button-primary" type="submit" :disabled="!canSubmit"><span v-if="isSubmitting" class="button-spinner" aria-hidden="true"></span>{{ isSubmitting ? \'Submitting...\' : \'Submit order\' }}</button></form></div><div v-if="showSuccessModal" class="modal-backdrop" role="presentation" @click.self="showSuccessModal = false"><section class="success-modal" role="dialog" aria-modal="true"><button class="modal-close" type="button" aria-label="Close order confirmation" @click="showSuccessModal = false">×</button><div class="confirmation-mark" aria-hidden="true">✓</div><p class="eyebrow">Order complete</p><h2>Order submitted</h2><p>Your lessons are reserved and your order has been saved.</p><a class="button button-primary" href="#/activities" @click="showSuccessModal = false">Continue browsing</a></section></div></section>',
+          '<section class="page-section cart-page"><p class="eyebrow">Your lessons</p><h1>Cart and checkout</h1><div v-if="submitted" class="state confirmation" role="status"><div><div class="confirmation-mark" aria-hidden="true">✓</div><h2>Order submitted</h2><p>Your lessons are reserved. We will contact you with the next steps.</p><a class="button button-primary" href="#/activities">Choose more lessons</a></div></div><div v-else-if="cart.length === 0" class="state"><div><h2>Your cart is empty.</h2><p>Add a lesson before checking out.</p><a class="button button-primary" href="#/activities">Browse lessons</a></div></div><div v-else class="cart-layout"><div class="cart-list"><article v-for="lesson in cart" :key="lesson.id || lesson._id" class="cart-item"><div><p class="activity-card__category">{{ lesson.subject }}</p><h2>{{ lesson.topic }}</h2><p>{{ lesson.location }} · ${{ Number(lesson.price).toLocaleString(\'en-US\') }}</p></div><button class="button button-secondary" type="button" @click="removeLesson(lesson)">Remove</button></article></div><form class="booking-panel booking-form" :aria-busy="isSubmitting" @submit.prevent="checkout"><h2>Parent details</h2><label class="field">Name<input v-model="name" type="text" autocomplete="name" required pattern="[a-zA-Z\\s]+" /><span v-if="name && !nameValid" class="field-error">Use letters and spaces only.</span></label><label class="field">Phone<input v-model="phone" type="tel" inputmode="numeric" autocomplete="tel" required pattern="[0-9]+" /><span v-if="phone && !phoneValid" class="field-error">Use numbers only.</span></label><p v-if="errorMessage" class="form-error" role="alert">{{ errorMessage }}</p><button class="button button-primary" type="submit" :disabled="!canSubmit"><span v-if="isSubmitting" class="button-spinner" aria-hidden="true"></span>{{ isSubmitting ? \'Submitting...\' : \'Submit order\' }}</button></form></div><div v-if="showSuccessModal" class="modal-backdrop" role="presentation" @click.self="showSuccessModal = false"><section class="success-modal" role="dialog" aria-modal="true"><button class="modal-close" type="button" aria-label="Close order confirmation" @click="showSuccessModal = false">×</button><div class="confirmation-mark" aria-hidden="true">✓</div><p class="eyebrow">Order complete</p><h2>Order submitted</h2><p>Your lessons are reserved and your order has been saved.</p><a class="button button-primary" href="#/activities" @click="showSuccessModal = false">Continue browsing</a></section></div></section>',
         setup(props, { emit }) {
           const name = ref(""),
             phone = ref(""),
-            selectedCountry = ref("MU"),
             isSubmitting = ref(false),
             errorMessage = ref(""),
             submitted = ref(false),
             showSuccessModal = ref(false);
-          const phoneLibrary = window.libphonenumber;
-          const countries = (phoneLibrary?.getCountries?.() || ["MU", "NG", "GB", "US"])
-            .map((code) => ({
-              code,
-              name: new Intl.DisplayNames(["en"], { type: "region" }).of(code) || code,
-              callingCode: phoneLibrary?.getCountryCallingCode?.(code) || "",
-              flag: code.replace(/./g, (letter) =>
-                String.fromCodePoint(127397 + letter.charCodeAt(0)),
-              ),
-            }))
-            .sort((a, b) => a.name.localeCompare(b.name));
-          const selectedCountryDetails = computed(() =>
-            countries.find((country) => country.code === selectedCountry.value),
-          );
-          const selectedCountryName = computed(() => selectedCountryDetails.value?.name || "selected country");
-          const selectedCallingCode = computed(() => selectedCountryDetails.value?.callingCode || "");
-          const phonePlaceholder = computed(() => selectedCountry.value === "MU" ? "e.g. 5251 2345" : "Enter your local phone number");
           const nameValid = computed(() =>
               /^[a-zA-Z\s]+$/.test(name.value.trim()),
             ),
-            parsedPhone = computed(() => {
-              if (!phone.value.trim() || !phoneLibrary?.parsePhoneNumberFromString) return null;
-              try {
-                return phoneLibrary.parsePhoneNumberFromString(phone.value, selectedCountry.value);
-              } catch {
-                return null;
-              }
-            }),
-            phoneValid = computed(() =>
-              Boolean(parsedPhone.value?.isValid() && parsedPhone.value.countryCallingCode === selectedCallingCode.value),
-            ),
+            phoneValid = computed(() => /^[0-9]+$/.test(phone.value)),
             canSubmit = computed(
               () =>
                 props.cart.length > 0 &&
@@ -800,8 +772,7 @@ const { createApp, ref, reactive, computed, onMounted, onUnmounted } =
             try {
               await submitOrder({
                 name: name.value.trim(),
-                phone: parsedPhone.value.number,
-                phoneCountry: selectedCountry.value,
+                phone: phone.value,
                 lessonIDs: props.cart.map((lesson) => lesson.id || lesson._id),
                 numberOfSpaces: props.cart.length,
               });
@@ -817,11 +788,6 @@ const { createApp, ref, reactive, computed, onMounted, onUnmounted } =
           return {
             name,
             phone,
-            selectedCountry,
-            countries,
-            selectedCountryName,
-            selectedCallingCode,
-            phonePlaceholder,
             isSubmitting,
             errorMessage,
             submitted,
